@@ -1,23 +1,34 @@
-const path = require("path");
 require("@nomicfoundation/hardhat-toolbox");
-require("dotenv").config({ path: path.join(__dirname, ".env") });
+require('dotenv').config({ path: `.env.${process.env.NETWORK || 'sepolia'}` });
 
-const { SOMNIA_RPC_URL, PRIVATE_KEY, CHAIN_ID } = process.env;
+const { RPC_URL, PRIVATE_KEY, CHAIN_ID } = process.env;
 
-/** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: "0.8.20",
   paths: {
-    sources: "./contracts", // only compile Solidity under ./contracts
+    sources: "./contracts",
     tests: "./test",
     cache: "./cache",
     artifacts: "./artifacts",
   },
   networks: {
-    somnia: {
-      url: SOMNIA_RPC_URL || "",
+    sepolia: {
+      url: RPC_URL || "https://ethereum-sepolia-rpc.publicnode.com", // Using publicnode.com as it worked in your test
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
-      chainId: CHAIN_ID ? parseInt(CHAIN_ID) : undefined,
+      chainId: CHAIN_ID ? parseInt(CHAIN_ID) : 11155111,
+      httpHeaders: {
+        "Content-Type": "application/json"
+      },
+      timeout: 120000 // 120 seconds
     },
-  },
+    somnia: {
+      url: "https://dream-rpc.somnia.network/",
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+      chainId: 5031,
+      httpHeaders: {
+        "Content-Type": "application/json"
+      },
+      timeout: 120000
+    }
+  }
 };

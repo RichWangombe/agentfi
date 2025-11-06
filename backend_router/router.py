@@ -16,12 +16,19 @@ Usage:
 import os
 import time
 import json
+import pathlib
 from dotenv import load_dotenv
 from web3 import Web3
 from eth_account import Account
 from eth_account.messages import encode_defunct
 
-load_dotenv()
+NET = os.getenv("NETWORK", "sepolia")
+DOTENV_PATH = pathlib.Path(__file__).with_name(f".env.{NET}")
+if DOTENV_PATH.exists():
+    load_dotenv(DOTENV_PATH)
+else:
+    # Fallback to .env if specific file is missing
+    load_dotenv()
 
 SOMNIA_RPC = os.getenv("SOMNIA_RPC")
 CHAIN_ID = int(os.getenv("CHAIN_ID", "0") or 0)
